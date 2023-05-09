@@ -9,11 +9,12 @@ type User struct {
 	Signature       string
 }
 
-func InsertUser(user *User) {
+func InsertUser(user *User) error {
 	result := Db.Create(user)
 	if result.Error != nil {
-		panic(result.Error)
+		return result.Error
 	}
+	return nil
 }
 
 func GetUserInfoByID(id int) (*User, error) {

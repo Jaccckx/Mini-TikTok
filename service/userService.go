@@ -1,5 +1,14 @@
 package service
 
 type UserService interface {
-	GetTableList() ([]string, error)
+	LikeService
+	FollowService
+
+	GetUserInfoById(id uint64) (*User, error)
+
+	GetUserInfoListById(id []uint64) ([]*User, error)
+
+	GetUserInfoByName(name string) (*User, error)
+
+	InsertUser(user *User) error
 }
