@@ -43,6 +43,12 @@ type Comment struct {
 
 func ToUser(user *dao.User) *User {
 	return &User{
+		FavoriteCount:   0,
+		FollowCount:     0,
+		FollowerCount:   0,
+		IsFollow:        false,
+		TotalFavorited:  "1",
+		WorkCount:       0,
 		Avatar:          user.Avatar,
 		BackgroundImage: user.BackgroundImage,
 		ID:              user.ID,
