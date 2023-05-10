@@ -1,6 +1,9 @@
 package service
 
-import "mini-tiktok/dao"
+import (
+	"mini-tiktok/dao"
+	"time"
+)
 
 type ActionType uint
 
@@ -38,7 +41,7 @@ type Comment struct {
 	Content    string `json:"content"`     // 评论内容
 	CreateDate string `json:"create_date"` // 评论发布日期，格式 mm-dd
 	ID         int64  `json:"id"`          // 评论id
-	User       User   `json:"user"`        // 评论用户信息
+	User       *User  `json:"user"`        // 评论用户信息
 }
 
 func ToUser(user *dao.User) *User {
@@ -54,5 +57,14 @@ func ToUser(user *dao.User) *User {
 		ID:              user.ID,
 		Name:            user.Name,
 		Signature:       user.Signature,
+	}
+}
+
+func ToComment(comment *dao.Comment) *Comment {
+	return &Comment{
+		Content:    comment.Content,
+		CreateDate: time.Unix(comment.CommitTime, 0).Format("2006-01-02 15:04:"),
+		ID:         comment.ID,
+		User:       nil,
 	}
 }

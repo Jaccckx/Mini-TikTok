@@ -1,9 +1,9 @@
 package service
 
 type CommentService interface {
-	GetCommentListByID(id uint64) ([]Comment, error)
+	GetCommentListByVideoID(videoID int64, currUserID int64) ([]*Comment, error)
 
-	InsertComment(comment *Comment) error
+	CreateComment(userID int64, videoID int64, content string) (int64, error)
 
-	DeleteCommentByID(id uint64) error
+	DeleteCommentByID(id int64) error
 }
