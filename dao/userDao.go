@@ -1,7 +1,7 @@
 package dao
 
 type User struct {
-	ID              int
+	ID              int64
 	Name            string
 	Password        string
 	Avatar          string
@@ -9,15 +9,43 @@ type User struct {
 	Signature       string
 }
 
-func InsertUser(user *User) error {
+// InsertUser 插入到数据库
+func InsertUser(user *User) (int64, error) {
 	result := Db.Create(user)
 	if result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
-	return nil
+
+	return result.RowsAffected, nil
 }
 
-func GetUserInfoByID(id int) (*User, error) {
+// GetUserIdByName 返回对应 name 的 user id, 若不存在返回 0
+func GetUserIdByName(name string) (int64, error) {
+	var user User
+	result := Db.Where("name =?", name).Limit(1).Find(&user)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return 0, nil
+	}
+	return user.ID, nil
+}
+
+// GetUserIdByPassword 返回对应的 user id, 若不存在返回 0
+func GetUserIdByPassword(name string, password string) (int64, error) {
+	var user User
+	result := Db.Where("name =? AND password =?", name, password).Limit(1).Find(&user)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return 0, nil
+	}
+	return user.ID, nil
+}
+
+func GetUserInfoByID(id int64) (*User, error) {
 	var user User
 	result := Db.First(&user, id)
 	if result.Error != nil {
