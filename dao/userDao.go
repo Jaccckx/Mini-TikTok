@@ -9,14 +9,16 @@ type User struct {
 	Signature       string
 }
 
-// InsertUser 插入到数据库
+// InsertUser 插入到数据库, 返回插入的ID, 若失败返回 0
 func InsertUser(user *User) (int64, error) {
 	result := Db.Create(user)
 	if result.Error != nil {
 		return 0, result.Error
 	}
-
-	return result.RowsAffected, nil
+	if result.RowsAffected == 0 {
+		return 0, nil
+	}
+	return user.ID, nil
 }
 
 // GetUserIdByName 返回对应 name 的 user id, 若不存在返回 0

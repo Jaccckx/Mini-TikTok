@@ -59,8 +59,11 @@ func (u *UserServiceImpl) GetUserInfoListById(ids []int64, currUserID int64) ([]
 
 func (u *UserServiceImpl) InsertUser(name string, password string) (int64, error) {
 	return dao.InsertUser(&dao.User{
-		Name:     name,
-		Password: password,
+		Name:            name,
+		Password:        password,
+		Avatar:          "https://siyuan-lieck.oss-cn-guangzhou.aliyuncs.com/v2-7bdf19ad23f3f04ae176680f0627fda5_xll.jpg",
+		BackgroundImage: "https://siyuan-lieck.oss-cn-guangzhou.aliyuncs.com/v2-7bdf19ad23f3f04ae176680f0627fda5_xll.jpg",
+		Signature:       "hhhhhhhhh",
 	})
 }
 
