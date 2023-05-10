@@ -1,14 +1,13 @@
 package service
 
 type UserService interface {
-	LikeService
-	FollowService
+	GetUserInfoById(userID int64, currUserID int64) (*User, error)
 
-	GetUserInfoById(id uint64) (*User, error)
+	GetUserInfoListById(id []int64, currUserID int64) ([]*User, error)
 
-	GetUserInfoListById(id []uint64) ([]*User, error)
+	InsertUser(name string, password string) (int64, error)
 
-	GetUserInfoByName(name string) (*User, error)
+	GetUserIdByName(name string) (int64, error)
 
-	InsertUser(user *User) error
+	GetUserIdByNameAndPassword(name string, password string) (int64, error)
 }

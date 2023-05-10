@@ -1,5 +1,7 @@
 package service
 
+import "mini-tiktok/dao"
+
 type ActionType uint
 
 const (
@@ -37,4 +39,14 @@ type Comment struct {
 	CreateDate string `json:"create_date"` // 评论发布日期，格式 mm-dd
 	ID         int64  `json:"id"`          // 评论id
 	User       User   `json:"user"`        // 评论用户信息
+}
+
+func ToUser(user *dao.User) *User {
+	return &User{
+		Avatar:          user.Avatar,
+		BackgroundImage: user.BackgroundImage,
+		ID:              user.ID,
+		Name:            user.Name,
+		Signature:       user.Signature,
+	}
 }
