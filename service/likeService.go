@@ -9,4 +9,10 @@ type LikeService interface {
 
 	// GetFavoriteCount 返回用户点赞数量
 	GetFavoriteCount(userID int64) (int64, error)
+
+	//IsFavoriteVideo 判断用户是否对视频点赞
+	IsFavoriteVideo(userID int64, videoID int64)(bool, error)
+
+	//GetFavoriteCountByVideoID 判断视频点赞数
+	GetFavoriteCountByVideoID(videoID int64)(int64, error)
 }

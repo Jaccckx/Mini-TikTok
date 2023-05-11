@@ -16,3 +16,13 @@ func (LikeServiceImpl) GetFavoriteCount(userID int64) (int64, error) {
 	//TODO implement me
 	return 0, nil
 }
+
+func (LikeServiceImpl) IsFavoriteVideo(userID int64, videoID int64)(bool, error){
+	//TODO implement me
+	return false, nil
+}
+
+func (LikeServiceImpl) GetFavoriteCountByVideoID(videoID int64) (int64, error) {
+	//TODO implement me
+	return int64(0), nil
+}

@@ -11,7 +11,7 @@ type CommentServiceImpl struct {
 
 // GetCommentListByVideoID 返回对应视频下的评论
 func (csi *CommentServiceImpl) GetCommentListByVideoID(videoID int64, currUserID int64) ([]*Comment, error) {
-	daoComments, err := dao.GetCommentByVideoID(videoID)
+	daoComments, err := dao.GetCommentListByVideoID(videoID)
 	if err != nil {
 		return nil, err
 	}
@@ -41,4 +41,9 @@ func (csi *CommentServiceImpl) CreateComment(userID int64, videoID int64, conten
 // DeleteCommentByID 删除评论
 func (csi *CommentServiceImpl) DeleteCommentByID(id int64) error {
 	return dao.DeleteCommentByID(id)
+}
+
+func (csi *CommentServiceImpl) GetCommentCountByVideoID(videoID int64) (int64,error){
+	//TODO implement me
+	return 0, nil
 }

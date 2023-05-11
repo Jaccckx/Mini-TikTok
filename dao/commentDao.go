@@ -33,8 +33,8 @@ func DeleteCommentByID(id int64) error {
 	return nil
 }
 
-// GetCommentByVideoID 返回对应的 video list
-func GetCommentByVideoID(id int64) ([]*Comment, error) {
+// GetCommentListByVideoID 返回对应的 video list
+func GetCommentListByVideoID(id int64) ([]*Comment, error) {
 	var comments []*Comment
 	result := Db.Where("video_id = ?", id).Take(&comments)
 	if result.Error != nil {

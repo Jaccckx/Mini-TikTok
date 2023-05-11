@@ -6,4 +6,6 @@ type CommentService interface {
 	CreateComment(userID int64, videoID int64, content string) (int64, error)
 
 	DeleteCommentByID(id int64) error
+
+	GetCommentCountByVideoID(videoID int64)(int64,error)
 }

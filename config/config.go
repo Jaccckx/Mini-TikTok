@@ -1,6 +1,6 @@
 package config
 
-var DBUrl = "url"
+var DBUrl = "127.0.0.1:3306"
 var DBUser = "user"
 var DBPassword = "pass"
 

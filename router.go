@@ -12,5 +12,5 @@ func initRouter(r *gin.Engine) {
 	api.GET("/user/", jwt.Auth(), controller.GetUserInfo)
 	api.POST("/user/register/", controller.Register)
 	api.POST("/user/login/", controller.Login)
-
+	api.GET("/feed", controller.Feed)
 }
