@@ -10,7 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// breif：从gin.Context请求里提取lastest_time参数和token参数，并返回视频列表
+// Feed breif：从gin.Context请求里提取lastest_time参数和token参数，并返回视频列表
 // @para c *gin.Context：HTTP请求上下文
 //
 // 函数内容：
@@ -43,7 +43,7 @@ func Feed(c *gin.Context) {
 
 }
 
-// breif：处理latest_time参数，使其由string格式变成time.Time格式
+// GetTime breif：处理latest_time参数，使其由string格式变成time.Time格式
 // @para timeStr string：lastest_time参数string格式
 // @return timeUnix time.Time: lastest_time参数time.Time格式
 //
@@ -70,7 +70,7 @@ func GetTime(timeStr string) (timeUnix time.Time) {
 func Publish(c *gin.Context) {
 	fileHeader, err := c.FormFile("data")
 	if err != nil {
-		logrus.Info("获取视频流失败:%v", err)
+		logrus.Info("[videoController-Publish] 获取视频流失败:%v", err)
 		c.JSON(http.StatusOK, PublishListResponse{
 			StatusCode: 1,
 			StatusMsg:  "获取视频流失败",
@@ -79,11 +79,12 @@ func Publish(c *gin.Context) {
 	}
 	// logrus.Info("---------------------")
 	// logrus.Info("data-len", fileHeader.Filename, fileHeader.Header, fileHeader.Size)
-	// userId, _ := strconv.ParseInt(c.GetString("userId"), 10, 64)
-	userId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
-	logrus.Debugln("Upload-userID:", userId)
+
+	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	logrus.Debugln("[videoController-Publish] Upload-userID: ", userId)
+
 	title := c.PostForm("title")
-	logrus.Debugln("Upload-videoTitle", title)
+	logrus.Debugln("[videoController-Publish] Upload-videoTitle: ", title)
 
 	publishService := service.VideoServiceImpl{}
 	err = publishService.PublishVideo(fileHeader, userId, title)
@@ -94,6 +95,7 @@ func Publish(c *gin.Context) {
 		statusCode = 1
 		statusMsg = "Upload Failed"
 	}
+
 	c.JSON(200, PublishListResponse{
 		StatusCode: statusCode,
 		StatusMsg:  statusMsg,

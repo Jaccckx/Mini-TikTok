@@ -2,8 +2,6 @@ package service
 
 import (
 	"mini-tiktok/dao"
-
-	"github.com/sirupsen/logrus"
 )
 
 type UserServiceImpl struct {
@@ -18,6 +16,9 @@ func (u *UserServiceImpl) GetUserInfoById(userID int64, currUserID int64) (*User
 		return nil, err
 	}
 	user := ToUser(userDb)
+
+	return user, nil
+
 	user.FavoriteCount, err = u.GetFavoriteCount(userID)
 	if err != nil {
 		return nil, err

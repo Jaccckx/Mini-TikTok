@@ -35,13 +35,18 @@ func NewToken(uid int64) (string, error) {
 
 func Auth() gin.HandlerFunc {
 	return func(context *gin.Context) {
+		// 获取 GET 的 token 参数
 		tokenString := context.Query("token")
 		if tokenString == "" {
-			logrus.Error("have token: ", tokenString)
-			context.AbortWithStatusJSON(401, gin.H{
-				"code": 401,
-			})
-			return
+			// 获取 POST 的 token 参数
+			tokenString = context.PostForm("token")
+			if tokenString == "" {
+				logrus.Error("have token: ", tokenString)
+				context.AbortWithStatusJSON(401, gin.H{
+					"code": 401,
+				})
+				return
+			}
 		}
 
 		token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
@@ -55,7 +60,7 @@ func Auth() gin.HandlerFunc {
 
 		if claims, ok := token.Claims.(*Claims); ok && token.Valid {
 			context.Set("user_id", claims.UserID)
-			logrus.Error("have token user_id", claims.UserID)
+			logrus.Debugln("have token user_id: ", claims.UserID)
 			context.Next()
 		} else {
 			logrus.Error("token is invalid")

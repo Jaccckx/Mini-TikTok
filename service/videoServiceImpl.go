@@ -55,29 +55,29 @@ func (v VideoServiceImpl) GetVideos(timeUnix time.Time, userID int64) (videos []
 	return
 }
 
-// BUG：上传的视频无法播放！
+// PublishVideo BUG：上传的视频无法播放！
 func (v VideoServiceImpl) PublishVideo(file *multipart.FileHeader, userID int64, title string) error {
 	path, err := dao.GetFileToService(file)
 	if err != nil {
-		logrus.Error("GetFileToService failed: ", err)
+		logrus.Error("[VideoServiceImpl-PublishVideo] GetFileToService failed: ", err)
 		return err
 	}
 
 	err = dao.UploadFileToOss(path, title+filepath.Ext(file.Filename))
 	if err != nil {
-		logrus.Error("UploadFileToOss failed: ", err)
+		logrus.Error("[VideoServiceImpl-PublishVideo] UploadFileToOss failed: ", err)
 		return err
 	}
 
 	playUrl, err := dao.GetUrlFromOss(title + filepath.Ext(file.Filename))
 	if err != nil {
-		logrus.Error("GetUrlFromOss failed: ", err)
+		logrus.Error("[VideoServiceImpl-PublishVideo] GetUrlFromOss failed: ", err)
 		return err
 	}
 
 	err = dao.InsertVideoRecordToDataBase(title, userID, playUrl, playUrl)
 	if err != nil {
-		logrus.Error("InsertVideoRecordToDataBase failed: ", err)
+		logrus.Error("[VideoServiceImpl-PublishVideo] InsertVideoRecordToDataBase failed: ", err)
 		dao.DeleteFileFromOss(title + filepath.Ext(file.Filename))
 		return err
 	}
