@@ -82,14 +82,14 @@ var emptyVideoErr string = "GetEmptyVideo!"
 var getVideoSucc string = "GetVideoSucc!"
 
 type PublishActionResponse struct {
-	StatusCode int64   `json:"status_code"`
-	StatusMsg  *string `json:"status_msg"`
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 type PublishListResponse struct {
 	StatusCode int64           `json:"status_code"` // 状态码，0-成功，其他值-失败
-	StatusMsg  string         `json:"status_msg"`  // 返回状态描述
-	// VideoList  []service.Video `json:"video_list"`  // 用户发布的视频列表
+	StatusMsg  string          `json:"status_msg"`  // 返回状态描述
+	VideoList  []service.Video `json:"video_list"`  // 用户发布的视频列表
 }
 
 type FeedResponse struct {

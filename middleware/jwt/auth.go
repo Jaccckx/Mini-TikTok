@@ -72,7 +72,6 @@ func Auth() gin.HandlerFunc {
 func AuthNoLogin() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		tokenString := context.Query("token")
-		logrus.Error("xxxx", context.Query("user_id"))
 		if tokenString == "" {
 			context.Set("user_id", "-1")
 			logrus.Error("aaaa", context.Query("user_id"))
@@ -90,7 +89,6 @@ func AuthNoLogin() gin.HandlerFunc {
 
 		if claims, ok := token.Claims.(*Claims); ok && token.Valid {
 			context.Set("user_id", claims.UserID)
-			logrus.Error("bbbb", context.Query("user_id"))
 			context.Next()
 		} else {
 			logrus.Error("token is invalid")

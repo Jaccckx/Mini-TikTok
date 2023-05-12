@@ -77,8 +77,6 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	// logrus.Info("---------------------")
-	// logrus.Info("data-len", fileHeader.Filename, fileHeader.Header, fileHeader.Size)
 
 	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
 	logrus.Debugln("[videoController-Publish] Upload-userID: ", userId)
@@ -96,8 +94,21 @@ func Publish(c *gin.Context) {
 		statusMsg = "Upload Failed"
 	}
 
-	c.JSON(200, PublishListResponse{
+	c.JSON(200, PublishActionResponse{
 		StatusCode: statusCode,
 		StatusMsg:  statusMsg,
+	})
+}
+
+func Publishlist(c *gin.Context) {
+	currUserID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+
+	videoServiceTemp := service.VideoServiceImpl{}
+	videoList := videoServiceTemp.GetVideosList(currUserID)
+	logrus.Error(videoList)
+	c.JSON(200, PublishListResponse{
+		StatusCode: 0,
+		StatusMsg:  "",
+		VideoList:  videoList,
 	})
 }

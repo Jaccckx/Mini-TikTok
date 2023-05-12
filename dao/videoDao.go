@@ -28,16 +28,30 @@ func (TableVideo) TableName() string {
 // @para timeUnix time.Time：视频最晚发布时间
 // @return tableVideos []TableVideo: 满足要求视频列表
 // @return nextTime int64：视频列表中视频的最晚发布时间
-// BUG：是否支持滑到底，不显示操作？
 func GetVideos(timeUnix time.Time) (tableVideos []TableVideo, nextTime int64) {
-	Db.Model(&TableVideo{}).Where("publish_time < ?", timeUnix).Order("publish_time desc").Limit(30).Find(&tableVideos)
+	result := Db.Model(&TableVideo{}).Where("publish_time < ?", timeUnix).Order("publish_time desc").Limit(30).Find(&tableVideos)
 	logrus.Debug("Dao GetVideos:", tableVideos)
 
+	if result.Error != nil {
+		logrus.Error("Dao GetVideos:", result.Error)
+		return
+	}
 	//处理nextTime
 	if len(tableVideos) == 0 {
 		nextTime = math.MaxInt64
 	} else {
 		nextTime = int64(tableVideos[len(tableVideos)-1].PublishTime.Unix())
+	}
+	return
+}
+
+func GetVideoListByUserID(userID int64) (tableVideos []TableVideo) {
+	result := Db.Model(&TableVideo{}).Where("author_id = ?", userID).Order("publish_time desc").Find(&tableVideos)
+	logrus.Debug("Dao GetVideoListByUserID:", tableVideos)
+
+	if result.Error != nil {
+		logrus.Error("Dao GetVideos:", result.Error)
+		return
 	}
 	return
 }
@@ -77,6 +91,7 @@ func GetFileToService(file *multipart.FileHeader) (path string, err error) {
 
 func UploadFileToOss(path string, title string) (err error) {
 	err = ossBucket.PutObjectFromFile(title, path)
+	err = ossBucket.SetObjectACL(title, oss.ACLPublicReadWrite)
 	if err != nil {
 		logrus.Error("UploadFileToOss failed: ", err)
 		return
@@ -94,16 +109,12 @@ func DeleteFileFromOss(title string) (err error) {
 }
 
 func GetUrlFromOss(fileName string) (PlayURL string, err error) {
-	PlayURL, err = ossBucket.SignURL(fileName, oss.HTTPGet, 60)
-	if err != nil {
-		logrus.Error("GetUrlFromOss failed: ", err)
-		return
-	}
+	PlayURL = urlPrefix + fileName
 	return
 }
 
 // 没有引入ffmeg
-func InsertVideoRecordToDataBase(title string, userID int64, playUrl string, coverURL string) (err error) {
+func InsertVideoRecordToDataBase(title string, userID int64, playUrl string, coverURL string) (videoID int64, err error) {
 	video := &TableVideo{
 		AuthorID:    userID,
 		Title:       title,
@@ -112,9 +123,20 @@ func InsertVideoRecordToDataBase(title string, userID int64, playUrl string, cov
 		PublishTime: time.Now(),
 	}
 	result := Db.Model(&TableVideo{}).Create(&video)
+	videoID = video.ID
 
 	if result.Error != nil {
 		logrus.Info("InsertVideoRecordToDataBase failed", result.Error)
+		return -1, result.Error
+	}
+	return videoID, nil
+}
+
+func DeleteVideoRecordFromDataBase(videoID int64) (err error) {
+	result := Db.Delete(&TableVideo{}, "id = ?", videoID)
+
+	if result.Error != nil {
+		logrus.Info("Delete video record failed:", result.Error)
 		return result.Error
 	}
 	return nil
@@ -122,8 +144,8 @@ func InsertVideoRecordToDataBase(title string, userID int64, playUrl string, cov
 
 func ClearFileFromService(filePath string) {
 	_, err := os.Stat(filePath)
+	// 文件不存在
 	if os.IsNotExist(err) {
-		// 文件不存在
 		return
 	}
 	os.Remove(filePath)

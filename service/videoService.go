@@ -2,6 +2,7 @@ package service
 
 import (
 	"mime/multipart"
+	"mini-tiktok/dao"
 	"time"
 )
 
@@ -18,6 +19,7 @@ type VideoService interface {
 	//@return int64： 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
 	GetVideos(timeUnix time.Time, user int64) (videos []Video, nextTime int64)
 
+	fillVideos(Tablevideos []dao.TableVideo, userID int64) (videos []Video) 
 	//brief：上传视频
 	PublishVideo(file *multipart.FileHeader, userID int64, title string) error
 }

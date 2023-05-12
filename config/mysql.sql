@@ -54,8 +54,7 @@ CREATE TABLE `users`  (
   UNIQUE INDEX `name_index`(`name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
-INSERT INTO `tiktok`.`users` (`id`, `name`, `password`)
-VALUES (0, 'barhas', '77a90868207689664f244ad398a871fc');
+
 INSERT INTO `tiktok`.`users` (`id`, `name`, `password`, `avatar`, `background_image`, `signature`)
 VALUES (1, 'mike', 'password', 'asd','asd','asd');
 INSERT INTO `tiktok`.`users` (`id`, `name`, `password`)

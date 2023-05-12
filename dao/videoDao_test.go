@@ -40,6 +40,7 @@ func TestGetVideoCount(t *testing.T) {
 }
 
 func TestUploadFileToOss(t *testing.T) {
+	Init()
 	type args struct {
 		path  string
 		title string
@@ -51,7 +52,7 @@ func TestUploadFileToOss(t *testing.T) {
 	}{
 		{
 			name:    "UploadFileToOss",
-			args:    args{path: "../resources/upload/VIDEO_20230511_182814046.mp4", title: "Game.mp4"},
+			args:    args{path: "../resources/upload/video4Test.mp4", title: "Test.mp4"},
 			wantErr: false,
 		},
 	}
@@ -119,7 +120,6 @@ func TestGetUrlFromOss(t *testing.T) {
 	}
 }
 
-// 操作不具有幂等性，需要添加删除操作
 func TestInsertVideoRecordToDataBase(t *testing.T) {
 	type args struct {
 		title    string
@@ -141,8 +141,35 @@ func TestInsertVideoRecordToDataBase(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := InsertVideoRecordToDataBase(tt.args.title, tt.args.userID, tt.args.playUrl, tt.args.coverURL); (err != nil) != tt.wantErr {
+			var videoID int64
+			var err error
+			if videoID, err = InsertVideoRecordToDataBase(tt.args.title, tt.args.userID, tt.args.playUrl, tt.args.coverURL); (err != nil) != tt.wantErr {
 				t.Errorf("InsertVideoRecordToDataBase() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			DeleteVideoRecordFromDataBase(videoID)
+		})
+	}
+}
+
+func TestGetVideoListByUserID(t *testing.T) {
+	Init()
+	type args struct {
+		userID int64
+	}
+	tests := []struct {
+		name            string
+		args            args
+		wantTableVideos []TableVideo
+	}{
+		{
+			name: "TestGetVideoListByUserID",
+			args: args{userID: 44},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotTableVideos := GetVideoListByUserID(tt.args.userID); len(gotTableVideos) != 1 {
+				t.Errorf("GetVideoListByUserID() = %v, want %v", gotTableVideos, tt.wantTableVideos)
 			}
 		})
 	}

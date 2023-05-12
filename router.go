@@ -14,6 +14,6 @@ func initRouter(r *gin.Engine) {
 	api.POST("/user/register/", controller.Register)
 	api.POST("/user/login/", controller.Login)
 	api.GET("/feed", jwt.AuthNoLogin(), controller.Feed)
-	//BUG:无法检测到token
 	api.POST("/publish/action/", jwt.Auth(), controller.Publish)
+	api.GET("/publish/list/", jwt.Auth(), controller.Publishlist)
 }

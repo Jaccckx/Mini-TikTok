@@ -13,6 +13,7 @@ import (
 
 var Db *gorm.DB
 var ossBucket *oss.Bucket
+var urlPrefix string
 
 func DataBaseInit() {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v)/tiktok?charset=utf8mb4&parseTime=True&loc=Local", config.DBUser, config.DBPassword, config.DBUrl)
@@ -24,13 +25,14 @@ func DataBaseInit() {
 }
 
 func OssInit() {
+
 	// 配置AccessKey和AccessKeySecret
 	accessKeyID := "LTAI5tFNwQ9bb67S4zELThhe"
 	accessKeySecret := "M4aqGPKKtd64PssB9CWJVMa956I3e0"
 	// 设置Endpoint和BucketName
 	endpoint := "oss-cn-beijing.aliyuncs.com"
 	bucketName := "mini-tiktok-bytedance"
-
+	urlPrefix = "https://" + bucketName + "." + endpoint + "/"
 	// 创建OSS客户端
 	client, err := oss.New(endpoint, accessKeyID, accessKeySecret)
 	if err != nil {

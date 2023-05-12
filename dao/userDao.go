@@ -1,5 +1,7 @@
 package dao
 
+import "github.com/sirupsen/logrus"
+
 type User struct {
 	ID              int64
 	Name            string
@@ -51,6 +53,7 @@ func GetUserInfoByID(id int64) (*User, error) {
 	var user User
 	result := Db.First(&user, id)
 	if result.Error != nil {
+		logrus.Info("GetUserInfoByID failed: ", result.Error)
 		return nil, result.Error
 	}
 	return &user, nil
