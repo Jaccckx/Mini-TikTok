@@ -1,6 +1,10 @@
 package service
 
-import "mini-tiktok/dao"
+import (
+	"mini-tiktok/dao"
+
+	"github.com/sirupsen/logrus"
+)
 
 type UserServiceImpl struct {
 	FollowServiceImpl
@@ -14,7 +18,6 @@ func (u *UserServiceImpl) GetUserInfoById(userID int64, currUserID int64) (*User
 		return nil, err
 	}
 	user := ToUser(userDb)
-
 	user.FavoriteCount, err = u.GetFavoriteCount(userID)
 	if err != nil {
 		return nil, err

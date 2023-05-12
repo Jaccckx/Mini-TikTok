@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"mini-tiktok/controller"
 	"mini-tiktok/middleware/jwt"
+
+	"github.com/gin-gonic/gin"
 )
 
 func initRouter(r *gin.Engine) {
@@ -12,5 +13,7 @@ func initRouter(r *gin.Engine) {
 	api.GET("/user/", jwt.Auth(), controller.GetUserInfo)
 	api.POST("/user/register/", controller.Register)
 	api.POST("/user/login/", controller.Login)
-	api.GET("/feed", controller.Feed)
+	api.GET("/feed", jwt.AuthNoLogin(), controller.Feed)
+	//BUG:无法检测到token
+	api.POST("/publish/action/", jwt.Auth(), controller.Publish)
 }

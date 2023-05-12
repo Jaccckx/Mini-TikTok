@@ -55,7 +55,7 @@ CREATE TABLE `users`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 INSERT INTO `tiktok`.`users` (`id`, `name`, `password`)
-VALUES (0, 'bowenzhang', '77a90868207689664f244ad398a871fc');
+VALUES (0, 'barhas', '77a90868207689664f244ad398a871fc');
 INSERT INTO `tiktok`.`users` (`id`, `name`, `password`, `avatar`, `background_image`, `signature`)
 VALUES (1, 'mike', 'password', 'asd','asd','asd');
 INSERT INTO `tiktok`.`users` (`id`, `name`, `password`)
@@ -64,7 +64,7 @@ VALUES (-1, 'null', 'null');
 -- Table structure for video
 -- ----------------------------
 CREATE TABLE videos (
-  ID int PRIMARY KEY,
+  ID int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   author_id int,
   title varchar(255),
   play_url varchar(255),

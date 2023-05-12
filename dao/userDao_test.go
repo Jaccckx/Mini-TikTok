@@ -1,9 +1,10 @@
 package dao
 
 import (
-	"log"
 	"strconv"
 	"testing"
+
+	"github.com/sirupsen/logrus"
 )
 
 func buildUser(num int) []*User {
@@ -29,10 +30,10 @@ func TestInsertTest(t *testing.T) {
 	users := buildUser(10)
 	result := Db.Create(&users)
 	if result.Error != nil {
-		log.Panic(result.Error)
+		logrus.Panic(result.Error)
 	}
 	if result.RowsAffected != 10 {
-		log.Panicf("insert num error: %v", result.RowsAffected)
+		logrus.Panicf("insert num error: %v", result.RowsAffected)
 	}
 	cleanTestDB()
 }

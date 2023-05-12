@@ -8,6 +8,7 @@ import (
 )
 
 func InitDeps() {
+	//初始化数据库，oss
 	dao.Init()
 
 	logrus.SetLevel(logrus.DebugLevel)

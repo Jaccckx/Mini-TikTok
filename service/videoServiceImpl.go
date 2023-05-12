@@ -1,15 +1,19 @@
 package service
 
 import (
+	"mime/multipart"
 	"mini-tiktok/dao"
+	"path/filepath"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 type VideoServiceImpl struct {
 }
 
-func (v VideoServiceImpl) GetVideoCount(id int64) (int64, error) {
-	return 0, nil
+func (v VideoServiceImpl) GetVideoCount(userID int64) (int64, error) {
+	return dao.GetVideoCount(userID)
 }
 
 func (v VideoServiceImpl) GetVideos(timeUnix time.Time, userID int64) (videos []Video, nextTime int64) {
@@ -49,4 +53,35 @@ func (v VideoServiceImpl) GetVideos(timeUnix time.Time, userID int64) (videos []
 		}
 	}
 	return
+}
+
+// BUG：上传的视频无法播放！
+func (v VideoServiceImpl) PublishVideo(file *multipart.FileHeader, userID int64, title string) error {
+	path, err := dao.GetFileToService(file)
+	if err != nil {
+		logrus.Error("GetFileToService failed: ", err)
+		return err
+	}
+
+	err = dao.UploadFileToOss(path, title+filepath.Ext(file.Filename))
+	if err != nil {
+		logrus.Error("UploadFileToOss failed: ", err)
+		return err
+	}
+
+	playUrl, err := dao.GetUrlFromOss(title + filepath.Ext(file.Filename))
+	if err != nil {
+		logrus.Error("GetUrlFromOss failed: ", err)
+		return err
+	}
+
+	err = dao.InsertVideoRecordToDataBase(title, userID, playUrl, playUrl)
+	if err != nil {
+		logrus.Error("InsertVideoRecordToDataBase failed: ", err)
+		dao.DeleteFileFromOss(title + filepath.Ext(file.Filename))
+		return err
+	}
+
+	dao.ClearFileFromService(path)
+	return nil
 }

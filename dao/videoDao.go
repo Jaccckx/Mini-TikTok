@@ -1,14 +1,18 @@
 package dao
 
 import (
+	"io/ioutil"
 	"math"
+	"mime/multipart"
+	"os"
 	"time"
 
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/sirupsen/logrus"
 )
 
 type TableVideo struct {
-	ID          int64 `gorm:"primaryKey"`
+	ID          int64 `gorm:"primaryKey;autoIncrement"`
 	AuthorID    int64
 	Title       string
 	PlayURL     string
@@ -26,7 +30,7 @@ func (TableVideo) TableName() string {
 // @return nextTime int64：视频列表中视频的最晚发布时间
 // BUG：是否支持滑到底，不显示操作？
 func GetVideos(timeUnix time.Time) (tableVideos []TableVideo, nextTime int64) {
-	Db.Where("publish_time < ?", timeUnix).Order("publish_time desc").Limit(30).Find(&tableVideos)
+	Db.Model(&TableVideo{}).Where("publish_time < ?", timeUnix).Order("publish_time desc").Limit(30).Find(&tableVideos)
 	logrus.Debug("Dao GetVideos:", tableVideos)
 
 	//处理nextTime
@@ -35,5 +39,94 @@ func GetVideos(timeUnix time.Time) (tableVideos []TableVideo, nextTime int64) {
 	} else {
 		nextTime = int64(tableVideos[len(tableVideos)-1].PublishTime.Unix())
 	}
+	return
+}
+
+// breif：根据用户ID，从数据库查询用户作品数
+// @para userID int64：用户ID
+// @return count int64: 用户作品数
+// @return err error：报错
+// BUG：是否支持滑到底，不显示操作？
+func GetVideoCount(userID int64) (count int64, err error) {
+	Db.Model(&TableVideo{}).Where("author_id = ?", userID).Count(&count)
+	return
+}
+
+func GetFileToService(file *multipart.FileHeader) (path string, err error) {
+	var dataStream multipart.File
+	dataStream, err = file.Open()
+	if err != nil {
+		logrus.Info("publish流视频打开失败！")
+		return
+	}
+	defer dataStream.Close()
+	data := make([]byte, file.Size)
+	if _, err = dataStream.Read(data); err != nil {
+		logrus.Info("publish流视频读写文件失败！")
+		return
+	}
+
+	path = "resources/upload/" + file.Filename
+	err = ioutil.WriteFile(path, data, 0644)
+	if err != nil {
+		logrus.Println("publish流视频写文件失败！")
+		return
+	}
+	return
+}
+
+func UploadFileToOss(path string, title string) (err error) {
+	err = ossBucket.PutObjectFromFile(title, path)
+	if err != nil {
+		logrus.Error("UploadFileToOss failed: ", err)
+		return
+	}
+	return
+}
+
+func DeleteFileFromOss(title string) (err error) {
+	err = ossBucket.DeleteObject(title)
+	if err != nil {
+		logrus.Error("UploadFileToOss failed: ", err)
+		return
+	}
+	return
+}
+
+func GetUrlFromOss(fileName string) (PlayURL string, err error) {
+	PlayURL, err = ossBucket.SignURL(fileName, oss.HTTPGet, 60)
+	if err != nil {
+		logrus.Error("GetUrlFromOss failed: ", err)
+		return
+	}
+	return
+}
+
+// 没有引入ffmeg
+func InsertVideoRecordToDataBase(title string, userID int64, playUrl string, coverURL string) (err error) {
+	video := &TableVideo{
+		AuthorID:    userID,
+		Title:       title,
+		PlayURL:     playUrl,
+		CoverURL:    coverURL,
+		PublishTime: time.Now(),
+	}
+	result := Db.Model(&TableVideo{}).Create(&video)
+
+	if result.Error != nil {
+		logrus.Info("InsertVideoRecordToDataBase failed", result.Error)
+		return result.Error
+	}
+	return nil
+}
+
+func ClearFileFromService(filePath string) {
+	_, err := os.Stat(filePath)
+	if os.IsNotExist(err) {
+		// 文件不存在
+		return
+	}
+	os.Remove(filePath)
+	logrus.Debugln("ClearFileFromService succ!")
 	return
 }

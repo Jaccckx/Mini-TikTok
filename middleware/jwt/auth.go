@@ -1,12 +1,13 @@
 package jwt
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/sirupsen/logrus"
 	"mini-tiktok/config"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/sirupsen/logrus"
 )
 
 type Claims struct {
@@ -36,7 +37,7 @@ func Auth() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		tokenString := context.Query("token")
 		if tokenString == "" {
-			logrus.Error("token is empty")
+			logrus.Error("have token: ", tokenString)
 			context.AbortWithStatusJSON(401, gin.H{
 				"code": 401,
 			})
@@ -54,6 +55,37 @@ func Auth() gin.HandlerFunc {
 
 		if claims, ok := token.Claims.(*Claims); ok && token.Valid {
 			context.Set("user_id", claims.UserID)
+			logrus.Error("have token user_id", claims.UserID)
+			context.Next()
+		} else {
+			logrus.Error("token is invalid")
+			context.AbortWithStatusJSON(401, gin.H{"error": "invalid token"})
+		}
+	}
+}
+
+func AuthNoLogin() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		tokenString := context.Query("token")
+		logrus.Error("xxxx", context.Query("user_id"))
+		if tokenString == "" {
+			context.Set("user_id", "-1")
+			logrus.Error("aaaa", context.Query("user_id"))
+			return
+		}
+
+		token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+			return []byte(config.TokenSignKey), nil
+		})
+		if err != nil {
+			logrus.Error(err)
+			context.AbortWithStatusJSON(401, gin.H{"error": err.Error()})
+			return
+		}
+
+		if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+			context.Set("user_id", claims.UserID)
+			logrus.Error("bbbb", context.Query("user_id"))
 			context.Next()
 		} else {
 			logrus.Error("token is invalid")
