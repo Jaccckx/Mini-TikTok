@@ -40,7 +40,25 @@ CREATE TABLE `follow`  (
    UNIQUE INDEX `follow_index`(`follower_id`, `following_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 133 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
-SET FOREIGN_KEY_CHECKS = 1;
+-- ----------------------------
+-- Table structure for message
+-- ----------------------------
+DROP TABLE IF EXISTS `message`;
+CREATE TABLE `message`  (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `from_user_id` int NULL DEFAULT NULL,
+    `to_user_id` int NULL DEFAULT NULL,
+    `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `create_time` int NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of message
+-- ----------------------------
+INSERT INTO `message` VALUES (5, 63, 62, '1', 1683961615);
+INSERT INTO `message` VALUES (6, 62, 63, '2', 1683961630);
+INSERT INTO `message` VALUES (7, 62, 63, '3', 1683961633);
 
 -- ----------------------------
 -- Table structure for users
