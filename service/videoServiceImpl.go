@@ -48,8 +48,10 @@ func (v VideoServiceImpl) GetVideos(timeUnix time.Time, userID int64) (videos []
 			videos[index].CommentCount = videoCommentCount
 		}
 		AuthorInfo, err := (&UserServiceImpl{}).GetUserInfoById(authorID, userID)
-		if err != nil {
+		if err == nil {
 			videos[index].Author = *AuthorInfo
+		} else {
+			logrus.Error("[VideoServiceImpl-GetVideos] GetUserInfoById error: ", err)
 		}
 	}
 	return

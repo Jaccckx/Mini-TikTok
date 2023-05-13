@@ -5,9 +5,9 @@ import (
 )
 
 type UserServiceImpl struct {
-	FollowServiceImpl
-	LikeServiceImpl
-	VideoServiceImpl
+	fsi FollowServiceImpl
+	lsi LikeServiceImpl
+	vsi VideoServiceImpl
 }
 
 func (u *UserServiceImpl) GetUserInfoById(userID int64, currUserID int64) (*User, error) {
@@ -17,31 +17,29 @@ func (u *UserServiceImpl) GetUserInfoById(userID int64, currUserID int64) (*User
 	}
 	user := ToUser(userDb)
 
-	return user, nil
-
-	user.FavoriteCount, err = u.GetFavoriteCount(userID)
+	user.FavoriteCount, err = u.lsi.GetFavoriteCount(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	user.FollowCount, err = u.GetFollowCount(userID)
+	user.FollowCount, err = u.fsi.GetFollowCount(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	user.FollowerCount, err = u.GetFollowerCount(userID)
+	user.FollowerCount, err = u.fsi.GetFollowerCount(userID)
 	if err != nil {
 		return nil, err
 	}
 
 	if userID != currUserID {
-		user.IsFollow, err = u.GetIsFollow(userID, currUserID)
+		user.IsFollow, err = u.fsi.GetIsFollow(userID, currUserID)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	user.WorkCount, err = u.GetVideoCount(userID)
+	user.WorkCount, err = u.vsi.GetVideoCount(userID)
 	if err != nil {
 		return nil, err
 	}

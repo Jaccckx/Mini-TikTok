@@ -31,13 +31,16 @@ CREATE TABLE `favorite`  (
 -- ----------------------------
 -- Table structure for follows
 -- ----------------------------
-DROP TABLE IF EXISTS `follows`;
-CREATE TABLE `follows`  (
-  `id` int NOT NULL,
-  `user_id` int NULL DEFAULT NULL,
-  `follower_id` int NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `follow`;
+CREATE TABLE `follow`  (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `following_id` int NOT NULL COMMENT '被关注用户 id',
+   `follower_id` int NOT NULL COMMENT '粉丝用户 id',
+   PRIMARY KEY (`id`) USING BTREE,
+   UNIQUE INDEX `follow_index`(`follower_id`, `following_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 133 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- ----------------------------
 -- Table structure for users
