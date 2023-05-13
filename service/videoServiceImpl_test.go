@@ -5,8 +5,6 @@ import (
 	"mini-tiktok/dao"
 	"testing"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 func TestVideoServiceImpl_GetVideos(t *testing.T) {
@@ -19,6 +17,6 @@ func TestVideoServiceImpl_GetVideos(t *testing.T) {
 	}
 	if videos, NextTime = v.GetVideos(time.Unix(NextTime, 0), -1); len(videos) != 0 || NextTime != math.MaxInt64 {
 		t.Errorf("wrong!\n")
-	} 
+	}
 
 }

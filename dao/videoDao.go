@@ -56,6 +56,18 @@ func GetVideoListByUserID(userID int64) (tableVideos []TableVideo) {
 	return
 }
 
+func GetLikeVideoListByUserID(userID int64) (tableVideos []TableVideo) {
+	result := Db.Table("videos").Select("videos.*").
+		Joins("JOIN likes ON videos.ID = likes.video_Id").
+		Where("likes.user_Id = ? && likes.like = 1", userID).
+		Find(&tableVideos)
+	if result.Error != nil {
+		logrus.Error("Dao GetVideos:", result.Error)
+		return
+	}
+	return
+}
+
 // breif：根据用户ID，从数据库查询用户作品数
 // @para userID int64：用户ID
 // @return count int64: 用户作品数

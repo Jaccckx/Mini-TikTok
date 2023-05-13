@@ -35,7 +35,6 @@ func NewToken(uid int64) (string, error) {
 
 func Auth() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		// 获取 GET 的 token 参数
 		tokenString := context.Query("token")
 		if tokenString == "" {
 			// 获取 POST 的 token 参数
@@ -74,7 +73,6 @@ func AuthNoLogin() gin.HandlerFunc {
 		tokenString := context.Query("token")
 		if tokenString == "" {
 			context.Set("user_id", "-1")
-			logrus.Error("aaaa", context.Query("user_id"))
 			return
 		}
 

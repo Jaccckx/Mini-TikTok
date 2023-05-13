@@ -19,13 +19,27 @@ func (csi *CommentServiceImpl) GetCommentListByVideoID(videoID int64, currUserID
 	var res []*Comment
 	for _, c := range daoComments {
 		to := ToComment(c)
-		to.User, err = csi.Usi.GetUserInfoById(c.ID, currUserID)
+		to.User, err = csi.Usi.GetUserInfoById(c.UserID, currUserID)
 		if err != nil {
 			return nil, err
 		}
 		res = append(res, to)
 	}
 	return res, nil
+}
+
+func (csi *CommentServiceImpl) GetCommentByCommentID(commentID int64, currUserID int64) (*Comment, error) {
+	daoComment, err := dao.GetCommentByCommentID(commentID)
+	if err != nil {
+		return nil, err
+	}
+
+	to := ToComment(daoComment)
+	to.User, err = csi.Usi.GetUserInfoById(daoComment.UserID, currUserID)
+	if err != nil {
+		return nil, err
+	}
+	return to, nil
 }
 
 // CreateComment 创建评论, 返回评论 id
@@ -43,7 +57,7 @@ func (csi *CommentServiceImpl) DeleteCommentByID(id int64) error {
 	return dao.DeleteCommentByID(id)
 }
 
-func (csi *CommentServiceImpl) GetCommentCountByVideoID(videoID int64) (int64,error){
+func (csi *CommentServiceImpl) GetCommentCountByVideoID(videoID int64) (int64, error) {
 	//TODO implement me
 	return 0, nil
 }

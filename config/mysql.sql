@@ -9,23 +9,22 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment`  (
-  `id` int NOT NULL,
+  `id` int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `user_id` int NULL DEFAULT NULL,
   `video_id` int NULL DEFAULT NULL,
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `commit_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
+  `commit_time` BIGINT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for favorite
+-- Table structure for likes
 -- ----------------------------
-DROP TABLE IF EXISTS `favorite`;
-CREATE TABLE `favorite`  (
-  `id` int NOT NULL,
-  `verion_id` int NULL DEFAULT NULL,
-  `user_id` int NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+DROP TABLE IF EXISTS `likes`;
+CREATE TABLE `likes`  (
+  `user_Id` BIGINT NOT NULL,
+  `video_Id`BIGINT NOT NULL,
+  `like` TINYINT NOT NULL,
+  PRIMARY KEY (`user_Id`, `video_Id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

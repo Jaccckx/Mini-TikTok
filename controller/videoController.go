@@ -34,6 +34,7 @@ func Feed(c *gin.Context) {
 		statusMsg = &emptyVideoErr
 		logrus.Println("feed stream Get Empty VideoList")
 	}
+
 	c.JSON(200, FeedResponse{
 		NextTime:   &nextTime,
 		StatusCode: statusCode,
@@ -101,11 +102,10 @@ func Publish(c *gin.Context) {
 }
 
 func Publishlist(c *gin.Context) {
-	currUserID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	currUserID, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 
 	videoServiceTemp := service.VideoServiceImpl{}
-	videoList := videoServiceTemp.GetVideosList(currUserID)
-	logrus.Error(videoList)
+	videoList := videoServiceTemp.GetPublishVideosList(currUserID)
 	c.JSON(200, PublishListResponse{
 		StatusCode: 0,
 		StatusMsg:  "",

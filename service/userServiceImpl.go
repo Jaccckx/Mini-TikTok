@@ -17,7 +17,7 @@ func (u *UserServiceImpl) GetUserInfoById(userID int64, currUserID int64) (*User
 	}
 	user := ToUser(userDb)
 
-	user.FavoriteCount, err = u.lsi.GetFavoriteCount(userID)
+	user.FavoriteCount, err = u.lsi.GetFavoriteCountByUserID(userID)
 	if err != nil {
 		return nil, err
 	}

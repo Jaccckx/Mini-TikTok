@@ -26,15 +26,12 @@ func DataBaseInit() {
 
 func OssInit() {
 
-	// 配置AccessKey和AccessKeySecret
-	accessKeyID := "LTAI5tFNwQ9bb67S4zELThhe"
-	accessKeySecret := "M4aqGPKKtd64PssB9CWJVMa956I3e0"
 	// 设置Endpoint和BucketName
 	endpoint := "oss-cn-beijing.aliyuncs.com"
 	bucketName := "mini-tiktok-bytedance"
 	urlPrefix = "https://" + bucketName + "." + endpoint + "/"
 	// 创建OSS客户端
-	client, err := oss.New(endpoint, accessKeyID, accessKeySecret)
+	client, err := oss.New(endpoint, config.AccessKeyID, config.AccessKeySecret)
 	if err != nil {
 		fmt.Println("Error:", err)
 		os.Exit(-1)

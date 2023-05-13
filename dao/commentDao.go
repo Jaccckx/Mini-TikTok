@@ -36,9 +36,18 @@ func DeleteCommentByID(id int64) error {
 // GetCommentListByVideoID 返回对应的 video list
 func GetCommentListByVideoID(id int64) ([]*Comment, error) {
 	var comments []*Comment
-	result := Db.Where("video_id = ?", id).Take(&comments)
+	result := Db.Model(Comment{}).Where("video_id = ?", id).Find(&comments)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return comments, nil
+}
+
+func GetCommentByCommentID(id int64) (*Comment, error) {
+	var comment *Comment
+	result := Db.Where("id = ?", id).Take(&comment)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return comment, nil
 }

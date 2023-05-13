@@ -18,7 +18,11 @@ func initRouter(r *gin.Engine) {
 	// video api
 	api.GET("/feed", jwt.AuthNoLogin(), controller.Feed)
 	api.POST("/publish/action/", jwt.Auth(), controller.Publish)
-	api.GET("/publish/list/", jwt.Auth(), controller.Publishlist)
+	api.GET("/publish/list/", jwt.AuthNoLogin(), controller.Publishlist)
+	api.POST("/favorite/action/", jwt.Auth(), controller.ActionLike)
+	api.GET("/favorite/list/", jwt.AuthNoLogin(), controller.Favoritelist)
+	api.POST("/comment/action/", jwt.Auth(), controller.ActionComment)
+	api.GET("/comment/list/", jwt.AuthNoLogin(), controller.CommentList)
 
 	// follow api
 	api.POST("/relation/action/", jwt.Auth(), controller.FollowAction)

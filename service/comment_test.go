@@ -5,22 +5,22 @@ import (
 	"testing"
 )
 
-// func TestComment(t *testing.T) {
-// 	csi := CommentServiceImpl{}
+func TestComment(t *testing.T) {
+	csi := CommentServiceImpl{}
 
-// 	id, err := csi.CreateComment(1, 1, "test comment")
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+	id, err := csi.CreateComment(1, 1, "test comment")
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 	err = csi.DeleteCommentByID(id)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// }
+	err = csi.DeleteCommentByID(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 
-// func TestMain(m *testing.M) {
-// 	dao.Init()
+func TestMain(m *testing.M) {
+	dao.Init()
 
-// 	m.Run()
-// }
+	m.Run()
+}

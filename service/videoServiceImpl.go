@@ -41,15 +41,13 @@ func (v VideoServiceImpl) fillVideos(tableVideos []dao.TableVideo, userID int64)
 		if err == nil {
 			videos[index].FavoriteCount = videoFavoriteCount
 		}
-		videoCommentCount, err := (&CommentServiceImpl{}).GetCommentCountByVideoID(videoID)
-		if err == nil {
-			videos[index].CommentCount = videoCommentCount
-		}
+
+		list, _ := (&CommentServiceImpl{}).GetCommentListByVideoID(videoID, userID)
+		videoCommentCount := len(list)
+		videos[index].CommentCount = int64(videoCommentCount)
 		AuthorInfo, err := (&UserServiceImpl{}).GetUserInfoById(authorID, userID)
 		if err == nil {
 			videos[index].Author = *AuthorInfo
-		} else {
-			logrus.Errorf("fillVideos Get AuthorInfo failed: %v", err)
 		}
 	}
 
@@ -64,10 +62,18 @@ func (v VideoServiceImpl) GetVideos(timeUnix time.Time, userID int64) (videos []
 	return
 }
 
-func (v VideoServiceImpl) GetVideosList(userID int64) (videos []Video) {
+func (v VideoServiceImpl) GetPublishVideosList(userID int64) (videos []Video) {
 	//获取视频列表
 	var tableVideos []dao.TableVideo
 	tableVideos = dao.GetVideoListByUserID(userID)
+	videos = v.fillVideos(tableVideos, userID)
+	return
+}
+
+func (v VideoServiceImpl) GetLikeVideosList(userID int64) (videos []Video) {
+	//获取视频列表
+	var tableVideos []dao.TableVideo
+	tableVideos = dao.GetLikeVideoListByUserID(userID)
 	videos = v.fillVideos(tableVideos, userID)
 	return
 }
@@ -113,6 +119,7 @@ func (v VideoServiceImpl) PublishVideo(file *multipart.FileHeader, userID int64,
 		return err
 	}
 
+	dao.ClearFileFromService("./resources/upload/" + title + ".jpg")
 	dao.ClearFileFromService(path)
 	return nil
 }
