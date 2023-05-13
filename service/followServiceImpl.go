@@ -1,38 +1,37 @@
 package service
 
+import "mini-tiktok/dao"
+
 type FollowServiceImpl struct{}
 
-func (FollowServiceImpl) FollowUser(userID int64, toUserID int64, actionType ActionType) error {
-	//TODO implement me
-	panic("implement me")
+func (FollowServiceImpl) FollowUser(userID int64, followingID int64) error {
+	return dao.InsertFollow(userID, followingID)
 }
 
-func (FollowServiceImpl) FollowUserList(userID int64) ([]int64, error) {
-	//TODO implement me
-	panic("implement me")
+func (FollowServiceImpl) UnFollowUser(userID int64, followingID int64) error {
+	return dao.DeleteFollow(userID, followingID)
 }
 
-func (FollowServiceImpl) FollowerUserList(userID int64) ([]int64, error) {
-	//TODO implement me
-	panic("implement me")
+func (FollowServiceImpl) GetFollowList(userID int64) ([]int64, error) {
+	return dao.GetFollowList(userID)
 }
 
-func (FollowServiceImpl) FriendUserList(userID int64) ([]int64, error) {
-	//TODO implement me
-	panic("implement me")
+func (FollowServiceImpl) GetFollowerList(userID int64) ([]int64, error) {
+	return dao.GetFollowerList(userID)
+}
+
+func (FollowServiceImpl) GetFriendList(userID int64) ([]int64, error) {
+	return dao.GetFriendList(userID)
 }
 
 func (FollowServiceImpl) GetFollowCount(userID int64) (int64, error) {
-	//TODO implement me
-	return 0, nil
+	return dao.GetFollowCount(userID)
 }
 
 func (FollowServiceImpl) GetFollowerCount(userID int64) (int64, error) {
-	//TODO implement me
-	return 0, nil
+	return dao.GetFollowerCount(userID)
 }
 
 func (FollowServiceImpl) GetIsFollow(userID int64, followId int64) (bool, error) {
-	//TODO implement me
-	return false, nil
+	return dao.GetIsFollow(userID, followId)
 }
