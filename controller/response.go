@@ -1,6 +1,9 @@
 package controller
 
-import "mini-tiktok/service"
+import (
+	"mini-tiktok/dao"
+	"mini-tiktok/service"
+)
 
 /// 用户模块
 
@@ -85,4 +88,17 @@ type FeedResponse struct {
 	StatusCode int64           `json:"status_code"` // 状态码，0-成功，其他值-失败
 	StatusMsg  *string         `json:"status_msg"`  // 返回状态描述
 	VideoList  []service.Video `json:"video_list"`  // 视频列表
+}
+
+/// Message 模块
+
+type MessageActionResponse struct {
+	StatusCode int64  `json:"status_code"` // 状态码，0-成功，其他值-失败
+	StatusMsg  string `json:"status_msg"`  // 返回状态描述
+}
+
+type MessageListResponse struct {
+	MessageList []*dao.Message `json:"message_list"` // 用户列表
+	StatusCode  int64          `json:"status_code"`  // 状态码，0-成功，其他值-失败
+	StatusMsg   string         `json:"status_msg"`   // 返回状态描述
 }

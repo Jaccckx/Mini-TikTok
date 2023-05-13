@@ -8,11 +8,14 @@ import (
 )
 
 func initRouter(r *gin.Engine) {
-	// user api
 	api := r.Group("/douyin")
+
+	// user api
 	api.GET("/user/", jwt.Auth(), controller.GetUserInfo)
 	api.POST("/user/register/", controller.Register)
 	api.POST("/user/login/", controller.Login)
+
+	// video api
 	api.GET("/feed", jwt.AuthNoLogin(), controller.Feed)
 	api.POST("/publish/action/", jwt.Auth(), controller.Publish)
 	api.GET("/publish/list/", jwt.Auth(), controller.Publishlist)
@@ -22,4 +25,8 @@ func initRouter(r *gin.Engine) {
 	api.GET("/relation/follow/list/", jwt.Auth(), controller.FollowList)
 	api.GET("/relation/follower/list/", jwt.Auth(), controller.FollowerList)
 	api.GET("/relation/friend/list/", jwt.Auth(), controller.FriendList)
+
+	// im api
+	api.POST("/message/action/", jwt.Auth(), controller.SendMessage)
+	api.GET("/message/chat/", jwt.Auth(), controller.GetMessageChat)
 }
