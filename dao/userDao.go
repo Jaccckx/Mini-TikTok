@@ -13,6 +13,7 @@ type User struct {
 
 // InsertUser 插入到数据库, 返回插入的ID, 若失败返回 0
 func InsertUser(user *User) (int64, error) {
+	// 为了避免重复插入导致存在多个相同名字的用户，name 字段应该使用唯一索引
 	result := Db.Create(user)
 	if result.Error != nil {
 		return 0, result.Error
